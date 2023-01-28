@@ -41,3 +41,6 @@ upstash-redis:
 
 xata:
   - "@next-auth/xata-adapter"
+
+pocketbase:
+  - "@next-auth/pocketbase-adapter"
