@@ -21,8 +21,8 @@ const pb = new Pocketbase("http://127.0.0.1:8090")
 
 runBasicTests({
   adapter: PocketbaseAdapter(pb, {
-    username: "",
-    password: "",
+    username: "Test@test.com",
+    password: "pocketbase1234",
   }),
   db: {
     async session(sessionToken) {
@@ -46,9 +46,6 @@ runBasicTests({
         if (pb_user.code) throw new Error("could not find user")
 
         return format<AdapterUser>(pb_user)
-        if (pb_user.code) throw new Error("could not find user")
-
-        return format<AdapterUser>(pb_user)
       } catch (_) {
         return null
       }
@@ -68,25 +65,26 @@ runBasicTests({
           format<AdapterAccount>(pb_account)
 
         return adapterAccount
-
-        if (pb_account.code) throw new Error("could not find account")
-
-        // Token and Token Secret are a part of the docs' adapter models schema but not expected to be included with the adapter-test account object
-        const { oauth_token, oauth_token_secret, ...adapterAccount } =
-          format<AdapterAccount>(pb_account)
-
-        return adapterAccount
       } catch (_) {
         return null
       }
     },
     async verificationToken({ identifier, token }) {
       try {
-        pb_veriToken = await pb
+        const pb_veriToken = await pb
           .collection("next_auth_verificationToken")
           .getFirstListItem<PocketBaseVerificationToken>(
             `identifier="${identifier}" && token="${token}"`
           )
+
+        if (pb_veriToken.code)
+          throw new Error("could not find verificationToken")
+
+        // @ts-expect-error
+        const { id, ...verificationToken } =
+          format<VerificationToken>(pb_veriToken)
+
+        return verificationToken
       } catch (_) {
         return null
       }
