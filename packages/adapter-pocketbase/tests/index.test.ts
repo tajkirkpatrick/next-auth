@@ -82,20 +82,11 @@ runBasicTests({
     },
     async verificationToken({ identifier, token }) {
       try {
-        const pb_veriToken = await pb
+        pb_veriToken = await pb
           .collection("next_auth_verificationToken")
           .getFirstListItem<PocketBaseVerificationToken>(
             `identifier="${identifier}" && token="${token}"`
           )
-
-        if (pb_veriToken.code)
-          throw new Error("could not find verificationToken")
-
-        // @ts-expect-error
-        const { id, ...verificationToken } =
-          format<VerificationToken>(pb_veriToken)
-
-        return verificationToken
       } catch (_) {
         return null
       }
