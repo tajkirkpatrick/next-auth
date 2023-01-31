@@ -46,6 +46,9 @@ runBasicTests({
         if (pb_user.code) throw new Error("could not find user")
 
         return format<AdapterUser>(pb_user)
+        if (pb_user.code) throw new Error("could not find user")
+
+        return format<AdapterUser>(pb_user)
       } catch (_) {
         return null
       }
@@ -57,6 +60,14 @@ runBasicTests({
           .getFirstListItem<PocketBaseAccount>(
             `provider="${provider}" && providerAccountId="${providerAccountId}"`
           )
+
+        if (pb_account.code) throw new Error("could not find account")
+
+        // Token and Token Secret are a part of the docs' adapter models schema but not expected to be included with the adapter-test account object
+        const { oauth_token, oauth_token_secret, ...adapterAccount } =
+          format<AdapterAccount>(pb_account)
+
+        return adapterAccount
 
         if (pb_account.code) throw new Error("could not find account")
 
